@@ -1,0 +1,20 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1746833689538,
+      "tag": "0000_marvelous_gwen_stacy",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1746834736040,
+      "tag": "0001_optimal_shadowcat",
+      "breakpoints": true
+    }
+  ]
+}
