@@ -1,0 +1,51 @@
+{
+    "General": {
+      "info": "Xiangyu (Leo) Shi\nxis004@ucsd.edu | (858)568-0271 | linkedin.com/in/xleoshi/ | github.com/xiangyshi"
+    },
+    "Education": {
+      "info": "University of California San Diego\nBachelor of Science, Mathematics - Computer Science Expected March 2025\n• Overall GPA: 3.9, Provost Honors (all quarters)\n• Proficiency in Python, Java, Nodejs, SQL, C/C++\n• Experience with NumPy, Pandas, Scikit-Learn, Django, Flask, MongoDB, Docker"
+    },
+    "Research Experience": [
+      {
+        "info": "Research: J Craig. Venter Institute June 2025 – Present\nResearch Intern\n● Benchmarking and developing protein structure visualization pipelines using ColabFold, enabling researchers to explore folded protein strands and interpret structural variants.\n● Building and integrating a deep learning classification model for predicting protein stability, contributing to ongoing efforts in bioinformatics and viral proteomics.\n● Collaborating cross-functionally with virologists and computational biologists to translate domain requirements into scalable software and ML tools."
+      },
+      {
+        "info": "Research: Ehlers Lab, The Scripps Research Institute September 2024 - Present\nResearch Assistant\n● Optimized bi-clustering algorithms for single nucleotide polymorphism (SNP) mutation analysis, reducing average runtime from 16 hours to 10 minutes.\n● Conducted performance profiling and algorithm tuning, streamlining genetic data analysis and boosting computational efficiency."
+      },
+      {
+        "info": "Research: Saier Lab, UC San Diego July 2024 - Present\nResearch Assistant\n● Independently developed a protein family architecture processing tool using Python and CDD/Pfam for Transporter Classification Database (TCDB), a database containing over 23000 protein strands.\n● Implemented algorithms to identify conserved domain gaps in protein sequences, using union-find methods to discover potential novel domains.\n● Applied Hidden Markov Models (HMMs) to represent multiple sequence alignments and enhance protein domain predictions."
+      }
+    ],
+    "Professional Experience": [
+      {
+        "info": "Work: Yunming Technology January 2025 – June 2025\nSoftware Engineer\n● Contributed to the development and deployment of an AI-powered Retrieval-Augmented Generation (RAG) chatbot system tailored for companies with CRM service needs.\n● Implemented features such as query reconstruction, live search, tool-augmented LLM reasoning, and Server-Sent Events (SSE) protocol integration."
+      },
+      {
+        "info": "Work: Foundation for a Human Internet September 2024 - Present\nFull Stack Engineer\n● Contributed to the development and optimization of humanID developer console utilizing Django and MySQL, improving usability and functionality.\n● Debugged and resolved UI issues by analyzing network requests and identifying an outdated API call in the backend.\n● Optimized cron task automation, leveraged innovative methods to resolve production and developing system incompatibility.\n● Enhanced Single Sign-On (SSO) system for user anonymity and identification, improving security and user experience."
+      },
+      {
+        "info": "Work: STEMz Learning July 2024 - Present\nFull Stack Engineer\n● Developed a dynamic quiz feature using JavaScript to enhance user engagement and learning outcomes.\n● Deployed an Express API on Vercel, facilitating cross-platform communication.\n● Managed end-to-end integration of user and classroom system with a MongoDB database."
+      },
+      {
+        "info": "Work: Green Light-Year April 2024 – October 2024\nBackend Team Leader\n● Utilized Flask and PostgresSQL to develop and deploy a full-stack website focused on ESG data visualization.\n● Contributed to Green Light-Year’s mission of promoting environmental sustainability and ESG principles through innovative technology solutions.\n● Acted as the primary point of contact between backend team and project lead, facilitating the process and ensuring efficient workflow."
+      },
+      {
+        "info": "Work: University of California, San Diego September 2023 – Present\nComputer Science & Engineering / Data Science / Mathematics Tutor\n● Hold weekly lab hours, helping students usually of class size 100+.\n● Prepare and test homework auto graders to ensure they are running as intended.\n● Attend weekly meetings to establish communication with the professor and other instructional assistants regarding course material, programming assignments, and student feedback."
+      }
+    ],
+    "Project Experience": [
+      {
+        "info": "Project: Group Member, CALEnviroScreen Regression Analysis June 2024\n● Analyzed public health indicators across California to infer educational attainment levels using statistical inference models.\n● Utilized QQ-plots, Wald-Wolf runs test, and Shapiro-Wilk test to assess the relationships between environmental factors and education levels.\n● Created choropleth maps to visualize the geographic distribution of educational attainment, highlighting regions influenced by public health indicators."
+      },
+      {
+        "info": "Project: ML Developer, Spanish-French Binary Classification June 2024\n● Developed a binary machine learning classifier using an ensemble of decision tree, histogram classifier, and naive Bayes classifier to classify unaccented French and Spanish words.\n● Employed advanced feature engineering, including 1-gram, 2-gram, and 3-gram character groups, as well as vowel percentage per word, to improve model accuracy.\n● Achieved a high accuracy of 0.928, demonstrating the effectiveness of combining linguistic features with multiple classification algorithms."
+      },
+      {
+        "info": "Project: ML Developer, Pick’em Prediction April 2024\n● Developed a predictive model for the League of Legends World Championship series by analyzing early-game data, including gold, experience, and minion kills, to forecast match outcomes.\n● Engineered features such as weighted gold and XP advantages at 10 and 15 minutes to enhance model performance, incorporating team-specific data via one-hot encoding.\n● Achieved a 0.95 accuracy for predicting World Championship outcomes with a Random Forest Classifier, significantly outperforming baseline models with logistic regression."
+      },
+      {
+        "info": "Project: Developer, Trial Sequence December 2023\n● Developed an automated trial sequence scheduling algorithm using Python, optimizing the process for cognitive research labs by minimizing human error and maximizing efficiency.\n● Implemented constraint satisfaction techniques to handle overlapping trial conditions, resource conflicts, and experimental requirements.\n● Validated algorithm accuracy by comparing generated schedules against manually created ones, ensuring reliability and precision.\n● Enhanced the tool’s flexibility to adapt to different experimental designs, saving significant time and effort for researchers."
+      }
+    ]
+  }
+  

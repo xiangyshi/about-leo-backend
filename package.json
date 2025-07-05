@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
-    "dev": "nodemon src/index.ts",
+    "dev": "nodemon --exec ts-node src/index.ts",
     "build": "tsc",
     "db:generate": "drizzle-kit generate:pg",
     "db:push": "drizzle-kit push:pg",
@@ -17,15 +17,22 @@
     "dotenv": "^16.3.1",
     "drizzle-orm": "^0.29.3",
     "postgres": "^3.4.3",
-    "pgvector": "^0.1.7"
+    "pgvector": "^0.1.7",
+    "openai": "^4.28.0",
+    "pdf-parse": "^1.1.1"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
     "@types/node": "^20.10.0",
     "@types/cors": "^2.8.17",
+    "@types/pdf-parse": "^1.1.4",
     "typescript": "^5.3.2",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
     "drizzle-kit": "^0.20.14"
+  },
+  "ts-node": {
+    "esm": false,
+    "experimentalSpecifierResolution": "node"
   }
 }
