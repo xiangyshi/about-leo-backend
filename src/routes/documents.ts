@@ -40,4 +40,20 @@ router.post('/search', async (req, res) => {
   }
 });
 
+// Delete all documents and embeddings
+router.delete('/', async (req, res) => {
+  try {
+    const result = await documentIndexer.deleteAllDocuments();
+    
+    res.json({ 
+      message: 'All documents and embeddings deleted successfully',
+      deletedDocuments: result.deletedDocuments,
+      deletedEmbeddings: result.deletedEmbeddings
+    });
+  } catch (error) {
+    console.error('Error deleting all documents:', error);
+    res.status(500).json({ error: 'Failed to delete all documents' });
+  }
+});
+
 export default router; 

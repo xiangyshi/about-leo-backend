@@ -48,7 +48,7 @@ export class DocumentProcessor {
     const data = await pdf(buffer);
     const fileName = path.basename(filePath);
     
-    return this.chunkText(data.text, fileName, 'pdf');
+    return this.chunkPdfText(data.text, fileName, 'pdf');
   }
 
   private chunkJson(content: string, fileName: string, fileType: string): DocumentChunk[] {
@@ -150,6 +150,236 @@ export class DocumentProcessor {
     chunks.forEach(chunk => {
       chunk.metadata.totalChunks = chunks.length;
     });
+    
+    return chunks;
+  }
+
+  private chunkPdfText(text: string, fileName: string, fileType: string): DocumentChunk[] {
+    const chunks: DocumentChunk[] = [];
+    let chunkIndex = 0;
+    
+    // Clean up the PDF text
+    const cleanText = text.replace(/\s+/g, ' ').trim();
+    
+    // Split by major resume sections first
+    const sections = this.splitPdfBySections(cleanText);
+    
+    for (const section of sections) {
+      const trimmedSection = section.trim();
+      if (!trimmedSection) continue;
+      
+      // Determine section type
+      let sectionType = 'general';
+      if (trimmedSection.toLowerCase().includes('education')) {
+        sectionType = 'education';
+      } else if (trimmedSection.toLowerCase().includes('experience') || trimmedSection.toLowerCase().includes('research')) {
+        sectionType = 'experience';
+      } else if (trimmedSection.toLowerCase().includes('project')) {
+        sectionType = 'project';
+      }
+      
+      // Split large sections into smaller chunks
+      const subChunks = this.splitPdfSection(trimmedSection, fileName, fileType, chunkIndex, sectionType);
+      chunks.push(...subChunks);
+      chunkIndex += subChunks.length;
+    }
+    
+    // Update total chunks count
+    chunks.forEach(chunk => {
+      chunk.metadata.totalChunks = chunks.length;
+    });
+    
+    return chunks;
+  }
+
+  private splitPdfBySections(text: string): string[] {
+    const sections: string[] = [];
+    
+    // Split by common resume section headers
+    const sectionRegex = /(EDUCATION|EXPERIENCE|PROFESSIONAL EXPERIENCE|RESEARCH EXPERIENCE|PROJECT EXPERIENCE|SKILLS|PROJECTS|CERTIFICATIONS|AWARDS)/i;
+    const parts = text.split(sectionRegex);
+    
+    // Recombine headers with their content
+    for (let i = 0; i < parts.length; i += 2) {
+      if (parts[i] && parts[i + 1]) {
+        const header = parts[i].trim();
+        const content = parts[i + 1].trim();
+        if (header && content) {
+          sections.push(header + ' ' + content);
+        }
+      }
+    }
+    
+    // If no sections found, split by paragraphs
+    if (sections.length <= 1) {
+      return text.split(/\n\s*\n/).filter(s => s.trim().length > 0);
+    }
+    
+    return sections;
+  }
+
+  private splitPdfSection(section: string, fileName: string, fileType: string, startIndex: number, sectionType: string): DocumentChunk[] {
+    const chunks: DocumentChunk[] = [];
+    let chunkIndex = startIndex;
+    
+    // Split by bullet points or job entries
+    const entries = this.splitPdfEntries(section);
+    
+    for (const entry of entries) {
+      const trimmedEntry = entry.trim();
+      if (!trimmedEntry) continue;
+      
+      // If entry is small enough, use as single chunk
+      if (trimmedEntry.length <= this.maxChunkSize) {
+        chunks.push({
+          content: trimmedEntry,
+          metadata: {
+            fileName,
+            chunkIndex: chunkIndex++,
+            totalChunks: 0,
+            fileType,
+            sectionType,
+          },
+        });
+      } else {
+        // Split large entries by bullet points or sentences
+        const subChunks = this.splitPdfEntry(trimmedEntry, fileName, fileType, chunkIndex, sectionType);
+        chunks.push(...subChunks);
+        chunkIndex += subChunks.length;
+      }
+    }
+    
+    return chunks;
+  }
+
+  private splitPdfEntries(text: string): string[] {
+    // Split by bullet points first
+    const bulletParts = text.split(/(?=●|•|\*|\-)/);
+    
+    if (bulletParts.length > 1) {
+      return bulletParts.filter(part => part.trim().length > 0);
+    }
+    
+    // Split by job/company patterns
+    const jobPattern = /([A-Z][a-zA-Z\s&.,]+(?:January|February|March|April|May|June|July|August|September|October|November|December|\d{4})\s+\d{4})/;
+    const jobParts = text.split(jobPattern);
+    
+    if (jobParts.length > 1) {
+      const entries: string[] = [];
+      for (let i = 0; i < jobParts.length; i += 2) {
+        if (jobParts[i] && jobParts[i + 1]) {
+          entries.push(jobParts[i].trim() + ' ' + jobParts[i + 1].trim());
+        }
+      }
+      return entries.filter(entry => entry.trim().length > 0);
+    }
+    
+    // Fallback: split by sentences
+    return text.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0);
+  }
+
+  private splitPdfEntry(entry: string, fileName: string, fileType: string, startIndex: number, sectionType: string): DocumentChunk[] {
+    const chunks: DocumentChunk[] = [];
+    let chunkIndex = startIndex;
+    
+    // Split by bullet points
+    const bullets = entry.split(/(?=●|•|\*|\-)/);
+    
+    if (bullets.length > 1) {
+      const header = bullets[0].trim();
+      
+      for (let i = 1; i < bullets.length; i++) {
+        const bullet = bullets[i].trim();
+        const testChunk = header + ' ' + bullet;
+        
+        if (testChunk.length <= this.maxChunkSize) {
+          chunks.push({
+            content: testChunk,
+            metadata: {
+              fileName,
+              chunkIndex: chunkIndex++,
+              totalChunks: 0,
+              fileType,
+              sectionType,
+            },
+          });
+        } else {
+          // Split by sentences if still too long
+          const sentences = bullet.split(/(?<=[.!?])\s+/);
+          let currentChunk = header;
+          
+          for (const sentence of sentences) {
+            const testSentence = currentChunk + ' ' + sentence;
+            
+            if (testSentence.length > this.maxChunkSize && currentChunk !== header) {
+              chunks.push({
+                content: currentChunk.trim(),
+                metadata: {
+                  fileName,
+                  chunkIndex: chunkIndex++,
+                  totalChunks: 0,
+                  fileType,
+                  sectionType,
+                },
+              });
+              currentChunk = header + ' ' + sentence;
+            } else {
+              currentChunk = testSentence;
+            }
+          }
+          
+          if (currentChunk.trim()) {
+            chunks.push({
+              content: currentChunk.trim(),
+              metadata: {
+                fileName,
+                chunkIndex: chunkIndex++,
+                totalChunks: 0,
+                fileType,
+                sectionType,
+              },
+            });
+          }
+        }
+      }
+    } else {
+      // No bullets, split by sentences
+      const sentences = entry.split(/(?<=[.!?])\s+/);
+      let currentChunk = '';
+      
+      for (const sentence of sentences) {
+        const testChunk = currentChunk + (currentChunk ? ' ' : '') + sentence;
+        
+        if (testChunk.length > this.maxChunkSize && currentChunk) {
+          chunks.push({
+            content: currentChunk.trim(),
+            metadata: {
+              fileName,
+              chunkIndex: chunkIndex++,
+              totalChunks: 0,
+              fileType,
+              sectionType,
+            },
+          });
+          currentChunk = sentence;
+        } else {
+          currentChunk = testChunk;
+        }
+      }
+      
+      if (currentChunk.trim()) {
+        chunks.push({
+          content: currentChunk.trim(),
+          metadata: {
+            fileName,
+            chunkIndex: chunkIndex++,
+            totalChunks: 0,
+            fileType,
+            sectionType,
+          },
+        });
+      }
+    }
     
     return chunks;
   }

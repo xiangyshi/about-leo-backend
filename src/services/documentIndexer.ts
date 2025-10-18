@@ -148,4 +148,32 @@ export class DocumentIndexer {
     
     return results;
   }
+
+  async deleteAllDocuments(): Promise<{ deletedDocuments: number; deletedEmbeddings: number }> {
+    console.log('Starting to delete all documents and embeddings...');
+    
+    try {
+      // First, get count of documents and embeddings before deletion
+      const documentCount = await db.select().from(ossDocuments);
+      const embeddingCount = await db.select().from(ragVectorEmbeddings);
+      
+      // Delete all embeddings first (due to foreign key constraint)
+      await db.delete(ragVectorEmbeddings);
+      console.log(`Deleted ${embeddingCount.length} embeddings`);
+      
+      // Delete all documents
+      await db.delete(ossDocuments);
+      console.log(`Deleted ${documentCount.length} documents`);
+      
+      console.log('Successfully deleted all documents and embeddings');
+      
+      return {
+        deletedDocuments: documentCount.length,
+        deletedEmbeddings: embeddingCount.length
+      };
+    } catch (error) {
+      console.error('Error deleting all documents:', error);
+      throw error;
+    }
+  }
 } 

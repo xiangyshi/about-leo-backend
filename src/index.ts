@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import documentRoutes from './routes/documents';
+import chatRoutes from './routes/chat';
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/documents', documentRoutes);
+app.use('/api/chat', chatRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
