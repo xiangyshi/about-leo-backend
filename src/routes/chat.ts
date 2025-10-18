@@ -1,19 +1,24 @@
 import express from 'express';
 import { ChatBot } from '../services/chatBot';
 import { DocumentIndexer } from '../services/documentIndexer';
+import { SecurityMiddleware } from '../middleware/security';
 
 const router = express.Router();
 const documentIndexer = new DocumentIndexer();
 const chatBot = new ChatBot(documentIndexer);
+const security = new SecurityMiddleware();
+
+// Apply security middleware to all chat routes
+router.use(security.getRequestLogger());
+router.use(security.getContentLengthLimit());
+router.use(security.getApiKeyAuth());
+router.use(security.getRateLimit());
+router.use(security.getSlowDown());
 
 // Send a chat message and get a response enhanced with RAG
-router.post('/', async (req, res) => {
+router.post('/', security.getChatValidation(), async (req: express.Request, res: express.Response) => {
   try {
-    const { message, limit = 5, systemPrompt, history } = req.body || {};
-
-    if (!message || typeof message !== 'string') {
-      return res.status(400).json({ error: 'message is required' });
-    }
+    const { message, limit = 5, systemPrompt, history } = req.body;
 
     const result = await chatBot.ask(message, {
       limit,
