@@ -2,7 +2,13 @@ import express from 'express';
 import { DocumentIndexer } from '../services/documentIndexer';
 
 const router = express.Router();
-const documentIndexer = new DocumentIndexer();
+let documentIndexer: DocumentIndexer | null = null;
+function getDocumentIndexer(): DocumentIndexer {
+  if (!documentIndexer) {
+    documentIndexer = new DocumentIndexer();
+  }
+  return documentIndexer;
+}
 
 // Index a document
 router.post('/index', async (req, res) => {
@@ -13,7 +19,7 @@ router.post('/index', async (req, res) => {
       return res.status(400).json({ error: 'filePath is required' });
     }
     
-    await documentIndexer.indexDocument(filePath);
+    await getDocumentIndexer().indexDocument(filePath);
     
     res.json({ message: 'Document indexed successfully', filePath });
   } catch (error) {
@@ -31,7 +37,7 @@ router.post('/search', async (req, res) => {
       return res.status(400).json({ error: 'query is required' });
     }
     
-    const results = await documentIndexer.searchSimilarContent(query, limit);
+    const results = await getDocumentIndexer().searchSimilarContent(query, limit);
     
     res.json({ results });
   } catch (error) {
@@ -43,7 +49,7 @@ router.post('/search', async (req, res) => {
 // Delete all documents and embeddings
 router.delete('/', async (req, res) => {
   try {
-    const result = await documentIndexer.deleteAllDocuments();
+    const result = await getDocumentIndexer().deleteAllDocuments();
     
     res.json({ 
       message: 'All documents and embeddings deleted successfully',

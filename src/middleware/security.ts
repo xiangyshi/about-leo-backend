@@ -37,6 +37,10 @@ export class SecurityMiddleware {
       },
       standardHeaders: true,
       legacyHeaders: false,
+      validate: {
+        xForwardedForHeader: false,
+        forwardedHeader: false,
+      },
     });
   }
 
@@ -45,7 +49,10 @@ export class SecurityMiddleware {
     return slowDown({
       windowMs: this.config.slowDownWindowMs,
       delayAfter: this.config.slowDownDelayAfter,
-      delayMs: this.config.slowDownDelayMs,
+      delayMs: () => this.config.slowDownDelayMs!,
+      validate: {
+        delayMs: false,
+      },
     });
   }
 

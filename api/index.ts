@@ -8,19 +8,27 @@ import { SecurityMiddleware } from '../src/middleware/security';
 dotenv.config();
 
 const app = express();
+app.set('trust proxy', 1);
 const security = new SecurityMiddleware();
 
-// Apply security headers globally
+// Global middleware
 app.use(security.getSecurityHeaders());
 app.use(cors());
 app.use(express.json({ limit: '10kb' }));
 
+// Health
 app.get('/', (req, res) => {
   res.json({ message: 'About Leo Backend with Vector Search!' });
 });
 
-app.use('/api/documents', documentRoutes);
-app.use('/api/chat', chatRoutes);
+// Mount src routes under /documents and /chat
+app.use('/documents', documentRoutes);
+app.use('/chat', chatRoutes);
 
-// Export the Express app for Vercel
-export default app;
+// Export serverless handler, normalizing /api prefix
+export default (req: any, res: any) => {
+  if (req?.url) {
+    req.url = req.url.replace(/^\/api\b/, '') || '/';
+  }
+  return (app as any)(req, res);
+};

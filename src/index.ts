@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.json({ message: 'About Leo Backend with Vector Search!' });
+  res.json({ message: 'About Leo Backend with Vector Search src!' });
 });
 
 app.use('/api/documents', documentRoutes);

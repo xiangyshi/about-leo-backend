@@ -4,8 +4,18 @@ import { DocumentIndexer } from '../services/documentIndexer';
 import { SecurityMiddleware } from '../middleware/security';
 
 const router = express.Router();
-const documentIndexer = new DocumentIndexer();
-const chatBot = new ChatBot(documentIndexer);
+let _documentIndexer: DocumentIndexer | null = null;
+let _chatBot: ChatBot | null = null;
+
+function getChatBot(): ChatBot {
+  if (!_documentIndexer) {
+    _documentIndexer = new DocumentIndexer();
+  }
+  if (!_chatBot) {
+    _chatBot = new ChatBot(_documentIndexer);
+  }
+  return _chatBot;
+}
 const security = new SecurityMiddleware();
 
 // Apply security middleware to all chat routes
@@ -20,7 +30,7 @@ router.post('/', security.getChatValidation(), async (req: express.Request, res:
   try {
     const { message, limit = 5, systemPrompt, history } = req.body;
 
-    const result = await chatBot.ask(message, {
+    const result = await getChatBot().ask(message, {
       limit,
       systemPromptOverride: systemPrompt,
       history,
