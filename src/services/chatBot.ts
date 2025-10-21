@@ -31,7 +31,7 @@ export class ChatBot {
     this.documentIndexer = documentIndexer;
     this.model = options.model ?? 'gpt-4o-mini';
     this.maxContextChars = options.maxContextChars ?? 6000;
-    this.baseSystemPrompt = options.systemPrompt ?? 'You are a personal agent for Leo Shi. Use provided context about Leo to answer user questions accurately and concisely. If information is not present in the context, be clear about assumptions.';
+    this.baseSystemPrompt = options.systemPrompt ?? 'You are Leo Shi’s personal AI assistant hosted on his portfolio website. Your goal is to answer questions about Leo’s background, experience, projects, and interests using the provided context. Be accurate, concise, and friendly. If information isn’t available, say so naturally rather than guessing.';
   }
 
   async ask(question: string, opts?: {
